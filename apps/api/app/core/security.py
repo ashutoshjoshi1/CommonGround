@@ -1,20 +1,36 @@
+import hashlib
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
+import bcrypt
 from jose import JWTError, jwt
-from passlib.context import CryptContext
 
 from app.core.config import settings
 
-pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+BCRYPT_MAX_BYTES = 72
+
+
+def _normalize_password(password: str) -> bytes:
+    """Normalize long passwords so hashing remains portable across bcrypt backends."""
+    encoded = password.encode("utf-8")
+    if len(encoded) <= BCRYPT_MAX_BYTES:
+        return encoded
+    # bcrypt accepts max 72 bytes. For longer inputs, pre-hash deterministically.
+    return hashlib.sha256(encoded).hexdigest().encode("ascii")
 
 
 def create_password_hash(password: str) -> str:
-    return pwd_context.hash(password)
+    return bcrypt.hashpw(_normalize_password(password), bcrypt.gensalt()).decode("utf-8")
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
-    return pwd_context.verify(password, hashed_password)
+    try:
+        return bcrypt.checkpw(
+            _normalize_password(password),
+            hashed_password.encode("utf-8"),
+        )
+    except ValueError:
+        return False
 
 
 def create_access_token(subject: str, expires_delta: timedelta | None = None) -> str:
