@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "commonground-api"
+version = "0.1.0"
+description = "CommonGround API"
+requires-python = ">=3.11"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+exclude = ["alembic"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B", "SIM"]
+ignore = ["E501", "B008"]
+
+[tool.pytest.ini_options]
+addopts = "-q"
+pythonpath = ["."]
+asyncio_default_fixture_loop_scope = "function"
+filterwarnings = [
+  "ignore:datetime.datetime.utcnow\\(\\) is deprecated:DeprecationWarning:jose.jwt",
+]

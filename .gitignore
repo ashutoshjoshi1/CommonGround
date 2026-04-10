@@ -1,0 +1,44 @@
+# Node
+node_modules
+.next
+pnpm-lock.yaml
+yarn.lock
+npm-debug.log*
+
+# Python
+__pycache__/
+*.py[cod]
+*.so
+.pytest_cache/
+.ruff_cache/
+.venv/
+venv/
+
+# Build
+build/
+dist/
+coverage/
+htmlcov/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Data and storage
+storage/
+minio-data/
+apps/api/storage/
+apps/api/.cache/
+
+# IDE
+.vscode/
+.idea/
+.DS_Store
+
+# Playwright
+playwright-report/
+apps/web/test-results/
+
+# Logs
+*.log

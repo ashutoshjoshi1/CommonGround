@@ -1,0 +1,8 @@
+# Optional ML stack for advanced local experimentation.
+# Install only when needed: pip install -r requirements-ml.txt
+sentence-transformers==3.3.1
+transformers==4.46.3
+torch==2.5.1
+langchain==0.3.9
+langgraph==0.2.56
+llama-index-core==0.12.2
