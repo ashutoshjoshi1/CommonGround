@@ -22,10 +22,19 @@ export async function apiFetch<T>(
     headers.set("Authorization", `Bearer ${token}`);
   }
 
-  const response = await fetch(`${API_BASE_URL}${path}`, {
-    ...options,
-    headers,
-  });
+  let response: Response;
+  try {
+    response = await fetch(`${API_BASE_URL}${path}`, {
+      ...options,
+      headers,
+    });
+  } catch (error) {
+    throw new ApiError(
+      `Unable to reach the API (${API_BASE_URL}). Make sure the API service is running.`,
+      0,
+      error,
+    );
+  }
 
   const contentType = response.headers.get("content-type") || "";
   const payload = contentType.includes("application/json")
@@ -51,16 +60,25 @@ export async function uploadFile<T>(
   const form = new FormData();
   form.append("file", file);
 
-  const response = await fetch(
-    `${API_BASE_URL}/sources/upload?workspace_id=${encodeURIComponent(workspaceId)}`,
-    {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${token}`,
+  let response: Response;
+  try {
+    response = await fetch(
+      `${API_BASE_URL}/sources/upload?workspace_id=${encodeURIComponent(workspaceId)}`,
+      {
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        body: form,
       },
-      body: form,
-    },
-  );
+    );
+  } catch (error) {
+    throw new ApiError(
+      `Unable to reach the API (${API_BASE_URL}). Make sure the API service is running.`,
+      0,
+      error,
+    );
+  }
 
   const payload = await response.json();
   if (!response.ok) {

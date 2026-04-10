@@ -39,6 +39,8 @@ It supports:
    - Web: `http://localhost:3000`
    - API docs: `http://localhost:8000/docs`
 
+`NEXT_PUBLIC_API_BASE_URL` defaults to `/api/v1` and is proxied by Next.js to `INTERNAL_API_BASE_URL` (default `http://localhost:8000`) to keep browser requests same-origin.
+
 If you run the API directly on your host (not only in Docker), install `tesseract` for OCR-backed image/scanned file extraction.
 
 Local demo credentials:

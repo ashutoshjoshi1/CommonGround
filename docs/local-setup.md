@@ -16,7 +16,7 @@
 2. Install dependencies
 
 - `npm install`
-- `cd apps/api && python -m pip install -r requirements-dev.txt`
+- `cd apps/api && python3 -m pip install -r requirements-dev.txt`
 
 3. Choose run mode
 
@@ -25,12 +25,12 @@
 
 4. Seed demo data
 
-- `cd apps/api && python -m app.scripts.seed`
+- `cd apps/api && python3 -m app.scripts.seed`
 
 5. If using local app processes, run applications
 
-- API: `cd apps/api && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
-- Worker: `cd apps/api && dramatiq app.worker.tasks --processes 1 --threads 4`
+- API: `cd apps/api && python3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000`
+- Worker: `cd apps/api && python3 -m dramatiq app.worker.tasks --processes 1 --threads 4`
 - Web: `npm --workspace apps/web run dev`
 
 ## Access URLs

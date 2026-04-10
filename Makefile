@@ -14,7 +14,7 @@ help:
 
 setup:
 	npm install
-	cd apps/api && python -m pip install -r requirements-dev.txt
+	cd apps/api && python3 -m pip install -r requirements-dev.txt
 
 dev:
 	npm run dev

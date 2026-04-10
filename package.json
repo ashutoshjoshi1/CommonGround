@@ -11,11 +11,11 @@
   "scripts": {
     "dev": "npm-run-all --parallel dev:web dev:api dev:worker",
     "dev:web": "npm --workspace apps/web run dev",
-    "dev:api": "cd apps/api && uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
-    "dev:worker": "cd apps/api && python -m dramatiq app.worker.tasks --processes 1 --threads 4",
+    "dev:api": "cd apps/api && python3 -m uvicorn app.main:app --reload --host 0.0.0.0 --port 8000",
+    "dev:worker": "cd apps/api && python3 -m dramatiq app.worker.tasks --processes 1 --threads 4",
     "build": "npm run build:web && npm run build:api",
     "build:web": "npm --workspace apps/web run build",
-    "build:api": "cd apps/api && python -m compileall -q app",
+    "build:api": "cd apps/api && python3 -m compileall -q app",
     "lint": "npm-run-all --parallel lint:web lint:api",
     "lint:web": "npm --workspace apps/web run lint",
     "lint:api": "cd apps/api && ruff check app tests",
@@ -26,7 +26,7 @@
     "test:web": "npm --workspace apps/web run test",
     "test:api": "cd apps/api && pytest",
     "test:e2e": "npm --workspace apps/web run test:e2e",
-    "seed": "cd apps/api && python -m app.scripts.seed",
+    "seed": "cd apps/api && python3 -m app.scripts.seed",
     "prepare": "husky install"
   },
   "devDependencies": {

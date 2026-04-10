@@ -37,4 +37,5 @@ Use `.env.example` as baseline.
 ## UI
 
 - `NEXT_PUBLIC_API_BASE_URL`
+- `INTERNAL_API_BASE_URL`
 - `NEXT_PUBLIC_DEV_BANNER`
