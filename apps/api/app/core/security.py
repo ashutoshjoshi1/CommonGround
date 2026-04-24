@@ -1,35 +1,50 @@
 import hashlib
+import hmac
+import secrets
 from datetime import UTC, datetime, timedelta
 from typing import Any
 
-import bcrypt
 from jose import JWTError, jwt
 
 from app.core.config import settings
 
-BCRYPT_MAX_BYTES = 72
-
-
-def _normalize_password(password: str) -> bytes:
-    """Normalize long passwords so hashing remains portable across bcrypt backends."""
-    encoded = password.encode("utf-8")
-    if len(encoded) <= BCRYPT_MAX_BYTES:
-        return encoded
-    # bcrypt accepts max 72 bytes. For longer inputs, pre-hash deterministically.
-    return hashlib.sha256(encoded).hexdigest().encode("ascii")
+PBKDF2_PREFIX = "pbkdf2_sha256"
+PBKDF2_ITERATIONS = 600_000
 
 
 def create_password_hash(password: str) -> str:
-    return bcrypt.hashpw(_normalize_password(password), bcrypt.gensalt()).decode("utf-8")
+    salt = secrets.token_hex(16)
+    derived = hashlib.pbkdf2_hmac(
+        "sha256",
+        password.encode("utf-8"),
+        salt.encode("utf-8"),
+        PBKDF2_ITERATIONS,
+    ).hex()
+    return f"{PBKDF2_PREFIX}${PBKDF2_ITERATIONS}${salt}${derived}"
 
 
 def verify_password(password: str, hashed_password: str) -> bool:
+    if hashed_password.startswith(f"{PBKDF2_PREFIX}$"):
+        try:
+            _, iterations_str, salt, expected = hashed_password.split("$", 3)
+            iterations = int(iterations_str)
+        except ValueError:
+            return False
+
+        actual = hashlib.pbkdf2_hmac(
+            "sha256",
+            password.encode("utf-8"),
+            salt.encode("utf-8"),
+            iterations,
+        ).hex()
+        return hmac.compare_digest(actual, expected)
+
+    # Backward compatibility for existing bcrypt hashes.
     try:
-        return bcrypt.checkpw(
-            _normalize_password(password),
-            hashed_password.encode("utf-8"),
-        )
-    except ValueError:
+        import bcrypt
+
+        return bcrypt.checkpw(password.encode("utf-8"), hashed_password.encode("utf-8"))
+    except Exception:
         return False
 
 
